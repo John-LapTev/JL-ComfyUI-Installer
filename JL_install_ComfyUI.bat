@@ -17,6 +17,14 @@ echo ===================
 echo Created by John LapTev
 echo.
 
+:: Проверка наличия папки ComfyUI
+if exist "ComfyUI" (
+    echo Папка ComfyUI уже существует!
+    echo Пожалуйста, удалите её или выберите другую папку для установки.
+    pause
+    exit
+)
+
 :: Загрузка и установка портативного Git
 if not exist "git" (
     echo Загрузка портативного Git...
@@ -37,16 +45,18 @@ if not exist "python_embeded" (
     powershell -command "Expand-Archive -Path python.zip -DestinationPath python_embeded"
     del python.zip
 
+    :: Настройка путей Python
+    (
+        echo python311.zip
+        echo .
+        echo Lib/site-packages
+    ) > python_embeded\python311._pth
+
     :: Загрузка pip
     echo Загрузка pip...
     curl -L -o get-pip.py "https://bootstrap.pypa.io/get-pip.py"
-    .\python_embeded\python.exe get-pip.py
+    .\python_embeded\python.exe get-pip.py --no-warn-script-location
     del get-pip.py
-
-    :: Настройка путей Python
-    echo python311.zip>>python_embeded\python311._pth
-    echo .>>python_embeded\python311._pth
-    echo python_embeded\Lib\site-packages>>python_embeded\python311._pth
 )
 
 :: Загрузка установщика
